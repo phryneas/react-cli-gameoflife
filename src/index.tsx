@@ -50,7 +50,14 @@ function nextTurn(field: boolean[], width: number): boolean[] {
 
 const Field = (props: { width: number; height: number }) => {
   const [state, dispatch] = useLocalSlice({
-    initialState: null as State | null,
+    initialState: {
+      status: "paused",
+      width: 0,
+      height: 0,
+      cursor: { x: 0, y: 0 },
+      speed: 500,
+      field: [],
+    } as State,
     reducers: {
       reset(
         _,
@@ -68,36 +75,22 @@ const Field = (props: { width: number; height: number }) => {
         };
       },
       cursorLeft(state) {
-        if (state) {
-          state.cursor.x = Math.max(0, state.cursor.x - 1);
-        }
+        state.cursor.x = Math.max(0, state.cursor.x - 1);
       },
       cursorRight(state) {
-        if (state) {
-          state.cursor.x = Math.min(state.width - 1, state.cursor.x + 1);
-        }
+        state.cursor.x = Math.min(state.width - 1, state.cursor.x + 1);
       },
       cursorUp(state) {
-        if (state) {
-          state.cursor.y = Math.max(0, state.cursor.y - 1);
-        }
+        state.cursor.y = Math.max(0, state.cursor.y - 1);
       },
       cursorDown(state) {
-        if (state) {
-          state.cursor.y = Math.min(state.height - 1, state.cursor.y + 1);
-        }
+        state.cursor.y = Math.min(state.height - 1, state.cursor.y + 1);
       },
       toggle(state) {
-        if (!state) {
-          return;
-        }
         state.field[state.cursor.y * state.width + state.cursor.x] = !state
           .field[state.cursor.y * state.width + state.cursor.x];
       },
       togglePause(state) {
-        if (!state) {
-          return;
-        }
         if (state.status === "paused") {
           state.status = "running";
         } else {
@@ -105,9 +98,6 @@ const Field = (props: { width: number; height: number }) => {
         }
       },
       nextTurn(state) {
-        if (!state) {
-          return;
-        }
         state.field = nextTurn(state.field, state.width);
       },
       increaseSpeed(state) {
@@ -174,8 +164,8 @@ const Field = (props: { width: number; height: number }) => {
               dispatch.decreaseSpeed();
               break;
           }
-          setLastKey(JSON.stringify({ str, key }));
       }
+      setLastKey(key?.name || str);
     }
     process.stdin.on("keypress", listener);
     return () => void process.stdin.off("keypress", listener);
@@ -198,10 +188,10 @@ const Field = (props: { width: number; height: number }) => {
   return (
     <Box flexDirection="column">
       <Text>
-        last rendered at {Date.now()}, speed: {state?.speed}, last key pressed
+        last rendered at {Date.now()}, speed: {state.speed}, last key pressed
         was {lastKey}
       </Text>
-      {state && (
+      {state.field.length > 0 && (
         <Box
           width={state.width + 2}
           height={state.height + 2}
