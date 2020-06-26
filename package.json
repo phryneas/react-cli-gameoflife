@@ -1,0 +1,22 @@
+{
+  "name": "gameoflife-ink",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@types/node": "^14.0.14",
+    "@types/react": "^16.9.41",
+    "ink": "^3.0.0-4",
+    "keypress": "^0.2.1",
+    "react": "^16.13.1",
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.5",
+    "use-local-slice": "^1.1.1"
+  },
+  "scripts": {
+    "start": "ts-node src/index.tsx"
+  },
+  "devDependencies": {
+    "ts-node-dev": "^1.0.0-pre.49"
+  }
+}
